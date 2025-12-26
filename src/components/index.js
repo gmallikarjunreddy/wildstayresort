@@ -1,0 +1,9 @@
+export { default as Preloader } from './Preloader';
+export { default as Navbar } from './Navbar';
+export { default as Hero } from './Hero';
+export { default as Philosophy } from './Philosophy';
+export { default as Experience } from './Experience';
+export { default as Location } from './Location';
+export { default as Footer } from './Footer';
+export { default as FloatingLeaves } from './FloatingLeaves';
+export { default as WhatsAppButton } from './WhatsAppButton';
