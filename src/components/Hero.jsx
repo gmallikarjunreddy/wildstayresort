@@ -8,9 +8,9 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-theme-bg/60 via-theme-bg/40 to-theme-bg z-10"></div>
         <div className="mist absolute inset-0 bg-gradient-to-b from-transparent via-theme-bg/40 to-theme-bg pointer-events-none z-[15]"></div>
         <img
-          src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80"
+          src="https://www.holidify.com/images/cmsuploads/compressed/udgfv_20181113173339.jpg"
           alt="Deep Forest"
-          className="w-full h-full object-cover scale-110 animate-pulse-slow opacity-60"
+          className="w-full h-full object-cover scale-110 opacity-60"
         />
       </div>
 

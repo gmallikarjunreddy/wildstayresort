@@ -44,7 +44,7 @@ const Philosophy = () => {
             <div className="relative rounded-3xl overflow-hidden h-[600px] shadow-2xl">
               <div className="absolute inset-0 bg-theme-bg/20 group-hover:bg-transparent transition-colors duration-700 z-10"></div>
               <img
-                src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1470&q=80"
+                src="https://2.bp.blogspot.com/-lZvPQUwQ6u0/UDN6g1QEcFI/AAAAAAAAAL8/AanEEtmkvfo/s1600/Ananthagiri-Hills.jpg"
                 alt="Forest Canopy"
                 className="w-full h-full object-cover transform scale-110 group-hover:scale-100 transition-transform duration-1000 ease-out"
               />
