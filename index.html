@@ -20,10 +20,12 @@
                 extend: {
                     colors: {
                         theme: {
-                            bg: '#0c1a22',
-                            gold: '#d6b77c',
-                            text: '#f1f1f1',
-                            muted: '#9aa6ad',
+                            bg: '#050a08',
+                            gold: '#c5a059',
+                            forest: '#1a2e25',
+                            leaf: '#3d5a45',
+                            text: '#e8edea',
+                            muted: '#8a968f',
                         }
                     },
                     fontFamily: {
@@ -35,6 +37,7 @@
                         'fade-in': 'fadeIn 0.5s ease-out forwards',
                         'slide-down': 'slideDown 1s ease-out forwards',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
                         fadeIn: {
@@ -44,6 +47,10 @@
                         slideDown: {
                             '0%': { transform: 'translateY(-20px)', opacity: '0' },
                             '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
                         }
                     }
                 }
@@ -53,15 +60,15 @@
 
     <style>
         body {
-            background-color: #0c1a22;
-            color: #f1f1f1;
+            background-color: #050a08;
+            color: #e8edea;
             overflow-x: hidden;
         }
 
         /* Selection Color */
         ::selection {
-            background-color: #d6b77c;
-            color: #0c1a22;
+            background-color: #c5a059;
+            color: #050a08;
         }
 
         /* Noise Overlay */
@@ -73,15 +80,23 @@
             height: 100%;
             pointer-events: none;
             z-index: 50;
-            opacity: 0.03;
-            background: url('https://www.transparenttextures.com/patterns/noise.png');
+            opacity: 0.04;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
+        }
+
+        /* Forest Mist Effect */
+        .mist {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent, rgba(5, 10, 8, 0.4), #050a08);
+            pointer-events: none;
         }
 
         /* Reveal Animations */
         .reveal-up {
             opacity: 0;
-            transform: translateY(60px);
-            transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .reveal-up.in-view {
             opacity: 1;
@@ -93,7 +108,7 @@
             clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
             transform: translateY(20px);
             opacity: 0;
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal-text.in-view {
             clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
@@ -105,16 +120,31 @@
         #preloader {
             position: fixed;
             inset: 0;
-            background-color: #0c1a22;
+            background-color: #050a08;
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.8s ease-out, visibility 0.8s;
+            transition: opacity 1s ease-out, visibility 1s;
         }
         #preloader.loaded {
             opacity: 0;
             visibility: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050a08;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1a2e25;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c5a059;
         }
     </style>
 </head>
@@ -123,17 +153,19 @@
     <!-- Preloader -->
     <div id="preloader">
         <div class="text-center">
-            <div class="relative w-24 h-24 mx-auto mb-6">
-                <div class="absolute inset-0 border-t-2 border-theme-gold rounded-full animate-spin"></div>
+            <div class="relative w-32 h-32 mx-auto mb-8">
+                <div class="absolute inset-0 border-t-2 border-theme-gold rounded-full animate-spin-slow"></div>
+                <div class="absolute inset-4 border-b-2 border-theme-leaf rounded-full animate-spin"></div>
                 <img 
                     src="https://i.ibb.co/6Rbhhhnt/Screenshot-20251226-072315-Gallery.jpg" 
-                    class="w-full h-full object-cover rounded-full opacity-80"
+                    class="w-full h-full object-cover rounded-full opacity-90 p-2"
                     alt="Logo"
                 />
             </div>
-            <h2 class="font-serif text-theme-gold text-xl tracking-[0.3em] uppercase animate-pulse">
-                Ananthagiri Hills
+            <h2 class="font-serif text-theme-gold text-2xl tracking-[0.4em] uppercase animate-pulse">
+                Wild Stay
             </h2>
+            <p class="text-theme-muted text-[10px] tracking-[0.5em] uppercase mt-2">Deep in the Forest</p>
         </div>
     </div>
 
@@ -141,121 +173,152 @@
     <div class="noise"></div>
 
     <!-- Navigation -->
-    <nav id="navbar" class="fixed w-full z-40 transition-all duration-500 py-8 bg-transparent">
+    <nav id="navbar" class="fixed w-full z-40 transition-all duration-700 py-8 bg-transparent">
         <div class="container mx-auto px-6 flex justify-between items-center">
-            <div class="flex items-center gap-4 cursor-pointer">
-                <img 
-                    src="https://i.ibb.co/6Rbhhhnt/Screenshot-20251226-072315-Gallery.jpg" 
-                    class="w-12 h-12 rounded-full border border-theme-gold/30 object-cover"
-                    alt="Wild Stay Logo"
-                />
-                <span class="font-serif text-lg tracking-widest font-bold text-white">WILD STAY</span>
+            <div class="flex items-center gap-4 cursor-pointer group">
+                <div class="relative">
+                    <img 
+                        src="https://i.ibb.co/6Rbhhhnt/Screenshot-20251226-072315-Gallery.jpg" 
+                        class="w-12 h-12 rounded-full border border-theme-gold/30 object-cover transition-transform duration-500 group-hover:scale-110"
+                        alt="Wild Stay Logo"
+                    />
+                    <div class="absolute -inset-1 border border-theme-gold/20 rounded-full animate-pulse-slow"></div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-serif text-xl tracking-widest font-bold text-white leading-none">WILD STAY</span>
+                    <span class="text-[8px] tracking-[0.3em] text-theme-gold uppercase">Ananthagiri Hills</span>
+                </div>
             </div>
 
             <!-- Desktop Links -->
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#the-resort" class="text-sm uppercase tracking-widest text-theme-muted hover:text-theme-gold transition-colors">The Resort</a>
-                <a href="#location" class="text-sm uppercase tracking-widest text-theme-muted hover:text-theme-gold transition-colors">Location</a>
-                <a href="#experience" class="text-sm uppercase tracking-widest text-theme-muted hover:text-theme-gold transition-colors">Experience</a>
-                <a href="#contact" class="text-sm uppercase tracking-widest text-theme-muted hover:text-theme-gold transition-colors">Contact</a>
-                <a href="https://wa.me/917032360083?text=I%20am%20interested%20in%20Wild%20Stay%20Resort%20Ananthagiri%20Hills" target="_blank" class="px-6 py-2 border border-theme-gold text-theme-gold text-xs uppercase tracking-widest hover:bg-theme-gold hover:text-theme-bg transition-all duration-500">
+            <div class="hidden md:flex items-center gap-10">
+                <a href="#the-resort" class="text-xs uppercase tracking-[0.2em] text-theme-muted hover:text-theme-gold transition-all duration-300">The Sanctuary</a>
+                <a href="#experience" class="text-xs uppercase tracking-[0.2em] text-theme-muted hover:text-theme-gold transition-all duration-300">Vibe</a>
+                <a href="#location" class="text-xs uppercase tracking-[0.2em] text-theme-muted hover:text-theme-gold transition-all duration-300">Location</a>
+                <a href="https://wa.me/917032360083?text=I%20am%20interested%20in%20Wild%20Stay%20Resort%20Ananthagiri%20Hills" target="_blank" class="px-8 py-3 bg-theme-gold/10 border border-theme-gold/50 text-theme-gold text-[10px] uppercase tracking-[0.3em] hover:bg-theme-gold hover:text-theme-bg transition-all duration-700 rounded-sm">
                     Register Interest
                 </a>
             </div>
 
             <!-- Mobile Toggle -->
-            <button id="menu-btn" class="md:hidden text-theme-gold">
-                <i data-lucide="menu"></i>
+            <button id="menu-btn" class="md:hidden text-theme-gold p-2">
+                <i data-lucide="menu" class="w-6 h-6"></i>
             </button>
         </div>
     </nav>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 z-30 bg-theme-bg flex-col items-center justify-center space-y-8 hidden opacity-0 transition-opacity duration-500">
+    <div id="mobile-menu" class="fixed inset-0 z-30 bg-theme-bg flex-col items-center justify-center space-y-10 hidden opacity-0 transition-opacity duration-500">
         <button id="close-menu-btn" class="absolute top-8 right-6 text-theme-gold">
-            <i data-lucide="x" class="w-8 h-8"></i>
+            <i data-lucide="x" class="w-10 h-10"></i>
         </button>
-        <a href="#the-resort" class="mobile-link font-serif text-3xl text-white hover:text-theme-gold transition-colors">The Resort</a>
-        <a href="#location" class="mobile-link font-serif text-3xl text-white hover:text-theme-gold transition-colors">Location</a>
-        <a href="#experience" class="mobile-link font-serif text-3xl text-white hover:text-theme-gold transition-colors">Experience</a>
-        <a href="#contact" class="mobile-link font-serif text-3xl text-white hover:text-theme-gold transition-colors">Contact</a>
+        <a href="#the-resort" class="mobile-link font-serif text-4xl text-white hover:text-theme-gold transition-colors">The Sanctuary</a>
+        <a href="#experience" class="mobile-link font-serif text-4xl text-white hover:text-theme-gold transition-colors">The Vibe</a>
+        <a href="#location" class="mobile-link font-serif text-4xl text-white hover:text-theme-gold transition-colors">Location</a>
+        <a href="#contact" class="mobile-link font-serif text-4xl text-white hover:text-theme-gold transition-colors">Contact</a>
     </div>
 
     <!-- Hero Section -->
     <section class="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
         <!-- Background -->
         <div class="absolute inset-0 z-0">
-            <div class="absolute inset-0 bg-gradient-to-b from-theme-bg/70 via-theme-bg/80 to-theme-bg z-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-theme-bg/60 via-theme-bg/40 to-theme-bg z-10"></div>
+            <div class="mist z-15"></div>
             <img 
-                src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80" 
-                alt="Ananthagiri Hills" 
-                class="w-full h-full object-cover scale-105 animate-pulse-slow"
+                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1920&q=80" 
+                alt="Deep Forest" 
+                class="w-full h-full object-cover scale-110 animate-pulse-slow opacity-60"
             />
         </div>
 
-        <div class="relative z-20 text-center max-w-4xl mx-auto mt-12">
-            <div class="mb-8 inline-block animate-slide-down">
-                <span class="px-6 py-2 border border-theme-gold text-theme-gold text-xs font-semibold tracking-[0.2em] uppercase rounded-full bg-theme-bg/50 backdrop-blur-sm">
-                    Under Construction
+        <div class="relative z-20 text-center max-w-5xl mx-auto mt-20">
+            <div class="mb-10 inline-block animate-slide-down">
+                <span class="px-8 py-2 border border-theme-leaf/30 text-theme-gold text-[10px] font-bold tracking-[0.4em] uppercase rounded-full bg-theme-forest/40 backdrop-blur-md">
+                    Coming Soon to Ananthagiri
                 </span>
             </div>
 
-            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl leading-tight mb-8">
-                Wild Stay <br />
-                <span class="text-theme-gold italic">Resort</span>
+            <h1 class="font-serif text-6xl md:text-8xl lg:text-9xl leading-[0.9] mb-10 reveal-text in-view">
+                Pure <br />
+                <span class="text-theme-gold italic">Nature</span> Vibe
             </h1>
 
-            <p class="text-theme-muted text-lg md:text-xl font-light max-w-2xl mx-auto mb-12 tracking-wide leading-relaxed animate-fade-in" style="animation-delay: 0.5s; opacity: 0; animation-fill-mode: forwards;">
-                Ananthagiri Hills • A four-star luxury sanctuary currently under construction, designed for those who value silence, elegance, and the raw beauty of nature.
+            <p class="text-theme-muted text-lg md:text-2xl font-light max-w-3xl mx-auto mb-14 tracking-wide leading-relaxed animate-fade-in" style="animation-delay: 0.6s; opacity: 0; animation-fill-mode: forwards;">
+                A luxury sanctuary hidden deep within the ancient forests of Ananthagiri Hills. Where the only neighbors are the trees and the only soundtrack is the wind.
             </p>
 
-            <div class="animate-fade-in" style="animation-delay: 0.8s; opacity: 0; animation-fill-mode: forwards;">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 animate-fade-in" style="animation-delay: 1s; opacity: 0; animation-fill-mode: forwards;">
                 <a 
                     href="https://wa.me/917032360083?text=I%20am%20interested%20in%20Wild%20Stay%20Resort%20Ananthagiri%20Hills"
                     target="_blank"
-                    class="group relative inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-[#e6c98f] to-theme-gold text-theme-bg rounded-full overflow-hidden hover:transform hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(214,183,124,0.3)] transition-all duration-500"
+                    class="group relative inline-flex items-center gap-4 px-12 py-5 bg-theme-gold text-theme-bg rounded-full overflow-hidden hover:transform hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(197,160,89,0.3)] transition-all duration-700"
                 >
-                    <span class="font-semibold tracking-wider uppercase text-sm z-10">Register Your Interest</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4 z-10 transition-transform group-hover:translate-x-1"></i>
-                    <div class="absolute inset-0 bg-white/30 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                    <span class="font-bold tracking-[0.2em] uppercase text-xs z-10">Enter the Wild</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 z-10 transition-transform group-hover:translate-x-2"></i>
+                    <div class="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+                </a>
+                
+                <a href="#the-resort" class="text-theme-gold text-xs uppercase tracking-[0.3em] hover:text-white transition-colors duration-300 flex items-center gap-2">
+                    Explore the Sanctuary <i data-lucide="chevron-down" class="w-4 h-4 animate-bounce"></i>
                 </a>
             </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-4 opacity-50">
+            <div class="w-[1px] h-20 bg-gradient-to-b from-transparent via-theme-gold to-transparent"></div>
         </div>
     </section>
 
     <!-- Philosophy Section -->
-    <section id="the-resort" class="py-24 md:py-32 px-6 relative z-10">
+    <section id="the-resort" class="py-32 md:py-48 px-6 relative z-10 overflow-hidden">
+        <!-- Decorative Leaf Element -->
+        <div class="absolute -left-20 top-1/4 opacity-10 rotate-45 pointer-events-none">
+            <i data-lucide="leaf" class="w-64 h-64 text-theme-leaf"></i>
+        </div>
+
         <div class="container mx-auto">
-            <div class="grid md:grid-cols-2 gap-16 items-center">
-                <div class="space-y-8">
-                    <h2 class="font-serif text-4xl md:text-5xl leading-tight reveal-text">
-                        Luxury Crafted by <span class="text-theme-gold italic">Nature</span>
+            <div class="grid md:grid-cols-2 gap-24 items-center">
+                <div class="space-y-10">
+                    <div class="inline-flex items-center gap-3 text-theme-gold reveal-up">
+                        <div class="w-12 h-[1px] bg-theme-gold"></div>
+                        <span class="text-[10px] uppercase tracking-[0.4em] font-bold">The Philosophy</span>
+                    </div>
+                    
+                    <h2 class="font-serif text-5xl md:text-6xl leading-[1.1] reveal-text">
+                        Where the Forest <br />
+                        <span class="text-theme-gold italic">Breathes</span>
                     </h2>
-                    <p class="text-theme-muted text-lg leading-relaxed font-light reveal-up delay-200">
-                        Wild Stay Resort is currently under construction in Ananthagiri Hills, blending refined hospitality with untouched wilderness. We believe true luxury lies in the absence of noise and the presence of peace.
+                    
+                    <p class="text-theme-muted text-xl leading-relaxed font-light reveal-up delay-200">
+                        Wild Stay is not just a resort; it's a dialogue with the earth. Nestled in the heart of Ananthagiri's dense canopy, we've crafted a sanctuary that respects the silence of the woods and the rhythm of the wild.
                     </p>
                     
-                    <div class="grid grid-cols-2 gap-8 pt-8 reveal-up delay-300">
-                        <div>
-                            <span class="block text-3xl font-serif text-theme-gold">4-Star</span>
-                            <span class="text-xs text-white/60 uppercase tracking-widest">Premium Rating</span>
+                    <div class="grid grid-cols-2 gap-12 pt-10 reveal-up delay-300">
+                        <div class="space-y-2">
+                            <span class="block text-4xl font-serif text-theme-gold">0%</span>
+                            <span class="text-[10px] text-white/40 uppercase tracking-[0.2em]">Urban Noise</span>
                         </div>
-                        <div>
-                            <span class="block text-3xl font-serif text-theme-gold">100%</span>
-                            <span class="text-xs text-white/60 uppercase tracking-widest">Privacy</span>
+                        <div class="space-y-2">
+                            <span class="block text-4xl font-serif text-theme-gold">100%</span>
+                            <span class="text-[10px] text-white/40 uppercase tracking-[0.2em]">Forest Immersion</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="relative group reveal-up delay-500">
-                    <div class="absolute -inset-4 border border-theme-gold/20 rounded-2xl transform rotate-3 group-hover:rotate-0 transition-transform duration-700"></div>
-                    <div class="relative rounded-2xl overflow-hidden h-[500px]">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+                    <div class="absolute -inset-6 border border-theme-gold/10 rounded-3xl transform -rotate-2 group-hover:rotate-0 transition-transform duration-1000"></div>
+                    <div class="relative rounded-3xl overflow-hidden h-[600px] shadow-2xl">
+                        <div class="absolute inset-0 bg-theme-bg/20 group-hover:bg-transparent transition-colors duration-700 z-10"></div>
                         <img 
-                            src="https://images.unsplash.com/photo-1560185893-a55cbc8c57e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" 
-                            alt="Luxury Cottage" 
-                            class="w-full h-full object-cover transform scale-100 group-hover:scale-110 transition-transform duration-1000 ease-out" 
+                            src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1470&q=80" 
+                            alt="Forest Canopy" 
+                            class="w-full h-full object-cover transform scale-110 group-hover:scale-100 transition-transform duration-1000 ease-out" 
                         />
+                        <!-- Floating Badge -->
+                        <div class="absolute bottom-8 left-8 z-20 bg-theme-bg/80 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                            <p class="text-theme-gold font-serif italic text-lg">"In every walk with nature, one receives far more than he seeks."</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -263,89 +326,122 @@
     </section>
 
     <!-- Experience Section -->
-    <section id="experience" class="py-24 px-6 bg-white/[0.02]">
-        <div class="container mx-auto">
-            <div class="mb-16 max-w-2xl reveal-up">
-                <span class="text-theme-gold text-xs uppercase tracking-[0.3em] font-bold block mb-4">The Experience</span>
-                <h2 class="font-serif text-3xl md:text-4xl">Immersive Living</h2>
+    <section id="experience" class="py-32 px-6 bg-theme-forest/20 relative overflow-hidden">
+        <div class="container mx-auto relative z-10">
+            <div class="text-center mb-24 reveal-up">
+                <span class="text-theme-gold text-[10px] uppercase tracking-[0.5em] font-bold block mb-6">The Experience</span>
+                <h2 class="font-serif text-4xl md:text-6xl">Pure Nature Vibe</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Card 1 -->
-                <div class="group p-8 rounded-2xl bg-[#ffffff]/[0.03] border border-[#ffffff]/10 hover:border-theme-gold hover:-translate-y-2 transition-all duration-500 reveal-up">
-                    <i data-lucide="star" class="w-8 h-8 text-theme-gold mb-6"></i>
-                    <h3 class="font-serif text-xl mb-3 text-white group-hover:text-theme-gold transition-colors">Elegant Living</h3>
-                    <p class="text-theme-muted text-sm leading-relaxed">Refined interiors with panoramic valley views.</p>
+                <div class="group p-10 rounded-3xl bg-theme-bg/40 border border-white/5 hover:border-theme-gold/30 hover:-translate-y-3 transition-all duration-700 reveal-up">
+                    <div class="w-16 h-16 rounded-2xl bg-theme-gold/10 flex items-center justify-center mb-8 group-hover:bg-theme-gold transition-colors duration-500">
+                        <i data-lucide="trees" class="w-8 h-8 text-theme-gold group-hover:text-theme-bg transition-colors"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl mb-4 text-white group-hover:text-theme-gold transition-colors">Ancient Canopy</h3>
+                    <p class="text-theme-muted text-sm leading-relaxed">Live among centuries-old trees that whisper stories of the hills.</p>
                 </div>
 
                 <!-- Card 2 -->
-                <div class="group p-8 rounded-2xl bg-[#ffffff]/[0.03] border border-[#ffffff]/10 hover:border-theme-gold hover:-translate-y-2 transition-all duration-500 reveal-up" style="transition-delay: 100ms;">
-                    <i data-lucide="wind" class="w-8 h-8 text-theme-gold mb-6"></i>
-                    <h3 class="font-serif text-xl mb-3 text-white group-hover:text-theme-gold transition-colors">Eco Design</h3>
-                    <p class="text-theme-muted text-sm leading-relaxed">Sustainable architecture rooted in natural harmony.</p>
+                <div class="group p-10 rounded-3xl bg-theme-bg/40 border border-white/5 hover:border-theme-gold/30 hover:-translate-y-3 transition-all duration-700 reveal-up" style="transition-delay: 150ms;">
+                    <div class="w-16 h-16 rounded-2xl bg-theme-gold/10 flex items-center justify-center mb-8 group-hover:bg-theme-gold transition-colors duration-500">
+                        <i data-lucide="bird" class="w-8 h-8 text-theme-gold group-hover:text-theme-bg transition-colors"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl mb-4 text-white group-hover:text-theme-gold transition-colors">Avian Melodies</h3>
+                    <p class="text-theme-muted text-sm leading-relaxed">Wake up to the natural orchestra of rare forest birds.</p>
                 </div>
 
                 <!-- Card 3 -->
-                <div class="group p-8 rounded-2xl bg-[#ffffff]/[0.03] border border-[#ffffff]/10 hover:border-theme-gold hover:-translate-y-2 transition-all duration-500 reveal-up" style="transition-delay: 200ms;">
-                    <i data-lucide="moon" class="w-8 h-8 text-theme-gold mb-6"></i>
-                    <h3 class="font-serif text-xl mb-3 text-white group-hover:text-theme-gold transition-colors">Night Trails</h3>
-                    <p class="text-theme-muted text-sm leading-relaxed">Guided moonlit walks and star gazing.</p>
+                <div class="group p-10 rounded-3xl bg-theme-bg/40 border border-white/5 hover:border-theme-gold/30 hover:-translate-y-3 transition-all duration-700 reveal-up" style="transition-delay: 300ms;">
+                    <div class="w-16 h-16 rounded-2xl bg-theme-gold/10 flex items-center justify-center mb-8 group-hover:bg-theme-gold transition-colors duration-500">
+                        <i data-lucide="mountain" class="w-8 h-8 text-theme-gold group-hover:text-theme-bg transition-colors"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl mb-4 text-white group-hover:text-theme-gold transition-colors">Mist Trails</h3>
+                    <p class="text-theme-muted text-sm leading-relaxed">Explore hidden paths where the clouds touch the forest floor.</p>
                 </div>
 
                 <!-- Card 4 -->
-                <div class="group p-8 rounded-2xl bg-[#ffffff]/[0.03] border border-[#ffffff]/10 hover:border-theme-gold hover:-translate-y-2 transition-all duration-500 reveal-up" style="transition-delay: 300ms;">
-                    <i data-lucide="sun" class="w-8 h-8 text-theme-gold mb-6"></i>
-                    <h3 class="font-serif text-xl mb-3 text-white group-hover:text-theme-gold transition-colors">Morning Calm</h3>
-                    <p class="text-theme-muted text-sm leading-relaxed">Wake up to mist and bird songs.</p>
+                <div class="group p-10 rounded-3xl bg-theme-bg/40 border border-white/5 hover:border-theme-gold/30 hover:-translate-y-3 transition-all duration-700 reveal-up" style="transition-delay: 450ms;">
+                    <div class="w-16 h-16 rounded-2xl bg-theme-gold/10 flex items-center justify-center mb-8 group-hover:bg-theme-gold transition-colors duration-500">
+                        <i data-lucide="leaf" class="w-8 h-8 text-theme-gold group-hover:text-theme-bg transition-colors"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl mb-4 text-white group-hover:text-theme-gold transition-colors">Organic Soul</h3>
+                    <p class="text-theme-muted text-sm leading-relaxed">Sustainable luxury that leaves no footprint, only memories.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Location / CTA Section -->
-    <section id="location" class="py-32 px-6 relative overflow-hidden">
-        <div class="absolute inset-0 bg-theme-gold/5"></div>
+    <section id="location" class="py-40 px-6 relative overflow-hidden">
+        <!-- Background Image with Parallax-like feel -->
+        <div class="absolute inset-0 z-0">
+            <img 
+                src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1920&q=80" 
+                class="w-full h-full object-cover opacity-20"
+                alt="Forest Background"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-theme-bg via-transparent to-theme-bg"></div>
+        </div>
+
         <div class="container mx-auto relative z-10 text-center">
-            <div class="inline-flex items-center gap-2 text-theme-gold mb-6 reveal-up">
-                <i data-lucide="map-pin" class="w-4 h-4"></i>
-                <span class="uppercase tracking-widest text-xs font-semibold">Ananthagiri Hills, Telangana</span>
+            <div class="inline-flex items-center gap-3 text-theme-gold mb-10 reveal-up">
+                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                <span class="uppercase tracking-[0.5em] text-[10px] font-bold">Ananthagiri Hills, Telangana</span>
             </div>
             
-            <h2 class="font-serif text-4xl md:text-6xl mb-8 reveal-up delay-100">
-                Your Future Sanctuary
+            <h2 class="font-serif text-5xl md:text-7xl mb-10 reveal-up delay-100">
+                Your Forest <span class="text-theme-gold italic">Sanctuary</span> Awaits
             </h2>
             
-            <p class="text-theme-muted max-w-lg mx-auto mb-12 reveal-up delay-200">
-                Be among the first to know when construction completes. Register your interest for updates via WhatsApp.
+            <p class="text-theme-muted max-w-2xl mx-auto mb-16 text-lg font-light reveal-up delay-200">
+                Construction is underway to bring you the ultimate nature retreat. Join our exclusive list to receive updates and early access to bookings.
             </p>
 
-            <a 
-                href="https://wa.me/917032360083?text=I%20am%20interested%20in%20Wild%20Stay%20Resort%20Ananthagiri%20Hills"
-                target="_blank"
-                class="inline-flex items-center gap-3 px-12 py-5 border border-theme-gold text-theme-gold hover:bg-theme-gold hover:text-theme-bg transition-all duration-500 rounded-full font-bold uppercase tracking-widest text-sm reveal-up delay-300"
-            >
-                <i data-lucide="message-circle" class="w-5 h-5"></i>
-                Register Interest
-            </a>
+            <div class="flex flex-col items-center gap-8 reveal-up delay-300">
+                <a 
+                    href="https://wa.me/917032360083?text=I%20am%20interested%20in%20Wild%20Stay%20Resort%20Ananthagiri%20Hills"
+                    target="_blank"
+                    class="inline-flex items-center gap-4 px-16 py-6 bg-transparent border border-theme-gold text-theme-gold hover:bg-theme-gold hover:text-theme-bg transition-all duration-700 rounded-full font-bold uppercase tracking-[0.3em] text-xs group"
+                >
+                    <i data-lucide="message-circle" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    Register Interest
+                </a>
+                <p class="text-[10px] text-white/30 uppercase tracking-[0.4em]">Limited Availability Upon Completion</p>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer id="contact" class="py-12 px-6 border-t border-white/5 bg-[#081218]">
-        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-3 opacity-80">
-                <img src="https://i.ibb.co/6Rbhhhnt/Screenshot-20251226-072315-Gallery.jpg" class="w-10 h-10 rounded-full border border-white/10" alt="Logo"/>
-                <div>
-                    <h4 class="font-serif text-white tracking-widest">WILD STAY</h4>
-                    <p class="text-[10px] text-theme-muted uppercase">Resort </p>
+    <footer id="contact" class="py-20 px-6 border-t border-white/5 bg-[#030706]">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-12">
+                <div class="flex items-center gap-6 group">
+                    <div class="relative">
+                        <img src="https://i.ibb.co/6Rbhhhnt/Screenshot-20251226-072315-Gallery.jpg" class="w-16 h-16 rounded-full border border-theme-gold/20 p-1 transition-transform duration-500 group-hover:rotate-12" alt="Logo"/>
+                        <div class="absolute -inset-1 border border-theme-gold/10 rounded-full"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-serif text-2xl text-white tracking-[0.2em]">WILD STAY</h4>
+                        <p class="text-[10px] text-theme-gold uppercase tracking-[0.4em]">Forest Sanctuary</p>
+                    </div>
                 </div>
-            </div>
-            
-            <p class="text-[#5c6870] text-sm">© 2025 Wild Stay Resort. Ananthagiri Hills.</p>
-            
-            <div class="flex items-center gap-4 text-theme-gold">
-                <a href="https://wa.me/917032360083" class="hover:text-white transition-colors"><i data-lucide="phone" class="w-5 h-5"></i></a>
-                <a href="https://wa.me/917032360083" class="hover:text-white transition-colors"><i data-lucide="message-circle" class="w-5 h-5"></i></a>
+                
+                <div class="flex flex-col items-center md:items-end gap-4">
+                    <p class="text-theme-muted text-sm font-light tracking-wide">© 2025 Wild Stay Resort. Ananthagiri Hills.</p>
+                    <div class="flex items-center gap-6">
+                        <a href="https://wa.me/917032360083" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-theme-gold hover:bg-theme-gold hover:text-theme-bg transition-all duration-500">
+                            <i data-lucide="phone" class="w-4 h-4"></i>
+                        </a>
+                        <a href="https://wa.me/917032360083" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-theme-gold hover:bg-theme-gold hover:text-theme-bg transition-all duration-500">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-theme-gold hover:bg-theme-gold hover:text-theme-bg transition-all duration-500">
+                            <i data-lucide="instagram" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
@@ -354,10 +450,13 @@
     <a 
         href="https://wa.me/917032360083?text=I%20am%20interested%20in%20Wild%20Stay%20Resort%20Ananthagiri%20Hills"
         target="_blank"
-        class="fixed bottom-8 right-8 z-50 p-4 bg-[#25D366] text-white rounded-full shadow-2xl hover:scale-110 transition-transform duration-300"
+        class="fixed bottom-10 right-10 z-50 p-5 bg-[#25D366] text-white rounded-full shadow-[0_20px_50px_rgba(37,211,102,0.4)] hover:scale-110 hover:-translate-y-2 transition-all duration-500 group"
         aria-label="Chat on WhatsApp"
     >
-        <i data-lucide="message-circle" class="w-6 h-6" fill="white"></i>
+        <i data-lucide="message-circle" class="w-7 h-7" fill="white"></i>
+        <span class="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white text-black text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+            Chat with us
+        </span>
     </a>
 
     <!-- Scripts -->
